@@ -18,8 +18,6 @@ def log_softmax(X):
     """
     Calculate the log of the softmax of the input matrix.
     
-    This is a separate method from softmax instead of just doing log(softmax(X)) becuase softmax(X) can produce very small values which then lead to log(softmax(X)) returning very large negative values.
-
     Stable computation formula by subtracting the max element of X from each row to avoid very small value inside log().
 
     Input: torch.tensor()
@@ -30,13 +28,24 @@ def log_softmax(X):
 
     return shifted_X - torch.log(torch.sum(torch.exp(shifted_X), dim=-1, keepdim=True))
 
-def cross_entropy(X):
-    pass
+def cross_entropy(Y_hat, y):
+    """
+    Computes cross entropy loss
+
+    Input: torch.tensor() matrix, torch.tensor() vector
+
+    Output: torch.tensor() scalar
+    """
+    return (-log_softmax(Y_hat)[torch.arange(0, Y_hat.shape[-2]), y]).mean()
 
 def ReLU(X):
-    pass
+    """Computes Recified Linear Unit"""
+    res = torch.where(X < 0.0, 0.0, X)
+    return res
+
 
 def GELU(X):
-    pass
+    """Computes Gaussian Error Linear Unit"""
+    return X*(1 + torch.erf(X/torch.sqrt(torch.tensor(2))))/2
 
 
